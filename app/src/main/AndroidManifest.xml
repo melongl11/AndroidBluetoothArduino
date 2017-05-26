@@ -21,4 +21,9 @@
     </application>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <receiver android:name = ".AlarmReceiver" android:exported = "true">
+        <intent-filter>
+            <action android:name = "com.test.alarm.ALARM_START"/>
+        </intent-filter>
+    </receiver>
 </manifest>

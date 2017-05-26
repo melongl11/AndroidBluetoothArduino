@@ -26,6 +26,11 @@
         android:layout_above="@+id/receiveString"
         android:layout_toRightOf="@+id/sendString"
         android:text="Send"/>
+    <Button
+        android:id="@+id/btn_reservation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reservation"/>
 
     <EditText
         android:id="@+id/receiveString"
