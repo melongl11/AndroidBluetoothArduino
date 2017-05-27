@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.example.mingyu.javaproject.ALActivity">
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Type here:"/>
+    <EditText
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="3"
+        android:hint="Hour"
+        android:layout_marginEnd="39dp"
+        android:layout_below="@+id/label"
+        android:layout_toStartOf="@+id/h_m" />
+    <TextView
+        android:id="@+id/h_m"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textSize="20pt"
+        android:layout_below="@+id/label"
+        android:layout_centerHorizontal="true" />
+
+
+    <EditText
+        android:id="@+id/minute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="3"
+        android:hint="Min"
+        android:layout_below="@+id/label"
+        android:layout_toEndOf="@+id/btn_reservset"
+        android:layout_marginStart="10dp" />
+
+    <TextView
+        android:id="@+id/macadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20pt"
+        android:layout_below="@+id/btn_reservset"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btn_reservset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:text="OK"
+        android:layout_below="@+id/h_m"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="95dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/btn_reservcancel"
+        android:layout_below="@+id/btn_reservset"
+        android:layout_alignStart="@+id/btn_reservset"
+        android:layout_marginTop="92dp" />
+</RelativeLayout>

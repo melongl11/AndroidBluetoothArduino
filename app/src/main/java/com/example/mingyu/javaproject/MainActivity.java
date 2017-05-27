@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         final DBManager dbManager = new DBManager(getApplicationContext(), "Food.db", null, 1);
+
+
 
         final EditText etName = (EditText) findViewById(R.id.et_foodname);
         final EditText etPrice = (EditText) findViewById(R.id.et_price);
@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         Button btnBluetooth = (Button) findViewById(R.id.btn_bluetooth);
         btnBluetooth.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -76,5 +78,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 }

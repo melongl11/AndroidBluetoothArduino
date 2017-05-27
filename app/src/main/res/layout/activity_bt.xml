@@ -7,7 +7,8 @@
     android:orientation="vertical"
     android:paddingBottom="10dp"
     android:paddingTop="10dp"
-    tools:context="com.example.mingyu.javaproject.BTManager">
+    tools:context="com.example.mingyu.javaproject.BTManager"
+    android:weightSum="1">
 
     <EditText
         android:id="@+id/sendString"
@@ -31,11 +32,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Reservation"/>
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"/>
 
     <EditText
         android:id="@+id/receiveString"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="188dp"
         android:layout_alignLeft="@+id/sendString"
         android:layout_alignRight="@+id/sendButton"
         android:layout_below="@+id/sendString"
@@ -45,6 +51,11 @@
         android:gravity="top"
         android:inputType="textMultiLine"
         />
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.41" />
 
 
 </LinearLayout>

@@ -1,21 +1,18 @@
 package com.example.mingyu.javaproject;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,12 +27,12 @@ import java.util.UUID;
  * Created by melon on 2017-05-22.
  */
 
-public class BTManager extends AppCompatActivity{
+public class BTManager extends AppCompatActivity {
     static final int REQUEST_ENABLE_BT = 10;
     int mPariedDeviceCount = 0;
     Set<BluetoothDevice> mDevices;
     BluetoothAdapter mBluetoothAdapter;
-    BluetoothDevice mRemoteDevie;
+    BluetoothDevice mRemoteDevice;
     BluetoothSocket mSocket = null;
     OutputStream mOutputStream = null;
     InputStream mInputStream = null;
@@ -51,6 +48,9 @@ public class BTManager extends AppCompatActivity{
 
     EditText mEditReceive, mEditSend;
     Button mButtonSend;
+    Button mButtonReg;
+    Button mButtonReservation;
+    TextView mResult;
 
 
 
@@ -59,9 +59,13 @@ public class BTManager extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt);
 
+        final DBManager dbManager = new DBManager(getApplicationContext(), "Food.db", null, 1);
+
         mEditReceive = (EditText)findViewById(R.id.receiveString);
         mEditSend = (EditText)findViewById(R.id.sendString);
+        mResult = (TextView)findViewById(R.id.tv_result);
         mButtonSend = (Button)findViewById(R.id.sendButton);
+
 
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +75,52 @@ public class BTManager extends AppCompatActivity{
             }
         });
 
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Title");
+        alert.setMessage("Message");
+
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String name = input.getText().toString();
+                String address = mRemoteDevice.getAddress();
+                Toast.makeText(getApplicationContext(), name + " " + address +" DB에 추가", Toast.LENGTH_LONG).show();
+                try {
+                    dbManager.insert("insert into FOOD_LIST values(null, '" + name + "', '" + address + "');");
+                    mResult.setText( dbManager.PrintData());
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "db Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+        mButtonReg = (Button)findViewById(R.id.btn_register);
+
+        mButtonReg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alert.show();
+            }
+        });
+
+        mButtonReservation = (Button)findViewById(R.id.btn_reservation);
+        mButtonReservation.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(BTManager.this, ALActivity.class);
+                i.putExtra("macadd",mRemoteDevice.getAddress());
+                startActivity(i);
+
+            }
+        });
 
         checkBluetooth();
     }
@@ -97,12 +147,12 @@ public class BTManager extends AppCompatActivity{
     }
 
     void connectToSelectedDevice(String selectedDeviceName) {
-        mRemoteDevie = getDeviceFromBondedList(selectedDeviceName);
+        mRemoteDevice = getDeviceFromBondedList(selectedDeviceName);
         UUID uuid = java.util.UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
         try {
 
-            mSocket = mRemoteDevie.createRfcommSocketToServiceRecord(uuid);
+            mSocket = mRemoteDevice.createRfcommSocketToServiceRecord(uuid);
             mSocket.connect();
 
 
