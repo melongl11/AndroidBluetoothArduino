@@ -59,7 +59,7 @@ public class BTManager extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt);
 
-        final DBManager dbManager = new DBManager(getApplicationContext(), "Food.db", null, 1);
+        final DBManager dbManager = new DBManager(getApplicationContext(), "Bulb.db", null, 1);
 
         mEditReceive = (EditText)findViewById(R.id.receiveString);
         mEditSend = (EditText)findViewById(R.id.sendString);
@@ -89,7 +89,7 @@ public class BTManager extends AppCompatActivity {
                 String address = mRemoteDevice.getAddress();
                 Toast.makeText(getApplicationContext(), name + " " + address +" DB에 추가", Toast.LENGTH_LONG).show();
                 try {
-                    dbManager.insert("insert into FOOD_LIST values(null, '" + name + "', '" + address + "');");
+                    dbManager.insert("insert into BULB_LIST values(null, '" + name + "', '" + address + "');");
                     mResult.setText( dbManager.PrintData());
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "db Error", Toast.LENGTH_LONG).show();
@@ -121,7 +121,7 @@ public class BTManager extends AppCompatActivity {
 
             }
         });
-
+        mResult.setText(dbManager.PrintData());
         checkBluetooth();
     }
 

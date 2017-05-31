@@ -19,7 +19,11 @@
         android:ems="10">
         <requestFocus />  // xml로 포커스 주는 방법
     </EditText>
-
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bulb_off" />
     <Button
         android:id="@+id/sendButton"
         android:layout_width="match_parent"

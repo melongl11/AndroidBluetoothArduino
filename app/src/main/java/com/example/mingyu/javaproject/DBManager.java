@@ -17,7 +17,7 @@ public class DBManager extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE FOOD_LIST( _id INTEGER PRIMARY KEY AUTOINCREMENT, name text, address text);");
+        db.execSQL("CREATE TABLE BULB_LIST( _id INTEGER PRIMARY KEY AUTOINCREMENT, Name text, address text);");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DBManager extends SQLiteOpenHelper{
         SQLiteDatabase db = getReadableDatabase();
         String str = "";
 
-        Cursor cursor = db.rawQuery("select * from FOOD_LIST", null);
+        Cursor cursor = db.rawQuery("select * from BULB_LIST", null);
         while(cursor.moveToNext()) {
             str += cursor.getInt(0)
                     + " : Name "
