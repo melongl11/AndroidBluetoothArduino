@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class BTManager extends AppCompatActivity {
     Button mButtonSend;
     Button mButtonReg;
     Button mButtonReservation;
+    ImageButton mImageButton;
     TextView mResult;
 
 
@@ -74,6 +76,15 @@ public class BTManager extends AppCompatActivity {
                 mEditSend.setText("");
             }
         });
+
+        mImageButton = (ImageButton)findViewById(R.id.imageButton);
+        mImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendData("a");
+            }
+        });
+
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -122,7 +133,62 @@ public class BTManager extends AppCompatActivity {
             }
         });
         mResult.setText(dbManager.PrintData());
-        checkBluetooth();
+
+        Intent i = getIntent();
+        int con = i.getIntExtra("Connect",3);
+        String macadd = i.getStringExtra("MacAddress");
+        try {
+            if (con == 0)
+                checkBluetooth();
+            else if (con == 1) {
+                Toast.makeText(getApplicationContext(), macadd, Toast.LENGTH_LONG).show();
+                connectToSelectedDeviceAdd(macadd);
+
+            }
+            else
+                finish();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+    }
+
+    BluetoothDevice getDeviceFromBondedListAdd(String macadd) {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            mDevices = mBluetoothAdapter.getBondedDevices();
+            BluetoothDevice selectedDevice = null;
+
+            try {
+                for (BluetoothDevice device : mDevices) {
+                    if (macadd.equals(device.getAddress())) {
+                        selectedDevice = device;
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "getDeviceFromBondedList Error", Toast.LENGTH_LONG).show();
+            }
+            return selectedDevice;
+    }
+
+    void connectToSelectedDeviceAdd(String selectedDeviceAddress) {
+            mRemoteDevice = getDeviceFromBondedListAdd(selectedDeviceAddress);
+            UUID uuid = java.util.UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+
+            try {
+                mSocket = mRemoteDevice.createRfcommSocketToServiceRecord(uuid);
+                mSocket.connect();
+
+
+                mOutputStream = mSocket.getOutputStream();
+
+                beginListenForData();
+
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "connectError", Toast.LENGTH_LONG).show();
+                finish();
+            }
     }
 
 
