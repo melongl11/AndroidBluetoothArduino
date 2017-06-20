@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_bt"
     android:layout_width="match_parent"
@@ -10,56 +10,31 @@
     tools:context="com.example.mingyu.javaproject.BTManager"
     android:weightSum="1">
 
-    <EditText
-        android:id="@+id/sendString"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:src="@drawable/light_bulb_on"
         android:layout_alignParentTop="true"
-        android:ems="10">
-        <requestFocus />  // xml로 포커스 주는 방법
-    </EditText>
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/bulb_off" />
-    <Button
-        android:id="@+id/sendButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/receiveString"
-        android:layout_toRightOf="@+id/sendString"
-        android:text="Send"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="51dp" />
+
     <Button
         android:id="@+id/btn_reservation"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Reservation"/>
+        android:text="Reservation"
+        android:layout_above="@+id/btn_register"
+        android:layout_centerHorizontal="true" />
+
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Register"/>
-
-    <EditText
-        android:id="@+id/receiveString"
-        android:layout_width="match_parent"
-        android:layout_height="188dp"
-        android:layout_alignLeft="@+id/sendString"
-        android:layout_alignRight="@+id/sendButton"
-        android:layout_below="@+id/sendString"
-        android:layout_marginTop="26dp"
-        android:ems="10"
-        android:focusable="false"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        />
-    <TextView
-        android:id="@+id/tv_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.41" />
+        android:text="Register"
+        android:layout_marginBottom="33dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/btn_reservation" />
 
 
-</LinearLayout>
+</RelativeLayout>

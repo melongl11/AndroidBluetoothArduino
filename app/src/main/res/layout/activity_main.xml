@@ -12,7 +12,7 @@
         android:id="@+id/btn_bluetooth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bluetooth Connect"/>
+        android:text="Connect to Bulb"/>
 
 
     <ListView

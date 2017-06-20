@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 /**
@@ -17,7 +18,7 @@ public class ALActivity extends AppCompatActivity{
 
     EditText mEditHour;
     EditText mEditMin;
-    TextView mTextMac;
+    TimePicker mTimePicker;
     Button mButtonReserv;
     Button mButtonCancel;
 
@@ -29,19 +30,20 @@ public class ALActivity extends AppCompatActivity{
         Intent i = getIntent();
         final String macadd = i.getStringExtra("macadd");
 
-        mEditHour = (EditText)findViewById(R.id.hour);
-        mEditMin = (EditText)findViewById(R.id.minute);
-        mTextMac = (TextView)findViewById(R.id.macadd);
 
-        mTextMac.setText(macadd);
+        mTimePicker = (TimePicker)findViewById(R.id.timePicker);
+
+
 
         mButtonReserv = (Button)findViewById(R.id.btn_reservset);
         mButtonReserv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int h = mTimePicker.getCurrentHour();
+                int m = mTimePicker.getCurrentMinute();
                 ALManager am = new ALManager();
-                am.setAlarm(getApplicationContext(),Integer.parseInt(mEditHour.getText().toString()),Integer.parseInt(mEditMin.getText().toString()), macadd);
-                Toast.makeText(getApplicationContext(), Integer.parseInt(mEditHour.getText().toString()) + "시 "+Integer.parseInt(mEditMin.getText().toString()) + "분 알람 설정 완료", Toast.LENGTH_LONG).show();
+                am.setAlarm(getApplicationContext(),h,m, macadd);
+                Toast.makeText(getApplicationContext(), h + "시 "+m + "분 알람 설정 완료", Toast.LENGTH_LONG).show();
             }
         });
 

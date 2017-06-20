@@ -7,12 +7,14 @@
       android:id="@+id/Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="10pt"
         android:textStyle="bold"
     />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/address"
+        android:textSize="10pt"
         android:textStyle="bold"/>
 
 </LinearLayout>

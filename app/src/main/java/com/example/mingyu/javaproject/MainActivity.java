@@ -1,12 +1,17 @@
 package com.example.mingyu.javaproject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,18 +22,14 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
-
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
-
-    ArrayList<HashMap<String, String>> bulbList;
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
 
     ListView list;
     ListAdapter adapter;
     DBManager dbManager;
     Cursor c;
+    private BackPressHandler backPressHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         list.setAdapter(adapter);
         list.setOnItemClickListener(this);
-
+        list.setOnItemLongClickListener(this);
 
         Button btnBluetooth = (Button) findViewById(R.id.btn_bluetooth);
         btnBluetooth.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         });
+        backPressHandler = new BackPressHandler(this);
+
 
     }
     @Override
@@ -71,5 +74,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivityForResult(intent, 0);
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+                            long id) {
+        // TODO Auto-generated method stub
+
+        c.moveToPosition(position);
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("전등을 삭제합니다.");
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                try {
+                    String name = c.getString(1);
+                    dbManager.delete("DELETE FROM BULB_LIST WHERE name='"+name+"' ;");
+                    SQLiteDatabase db = dbManager.getWritableDatabase();
+                    c = db.rawQuery("select * from BULB_LIST", null);
+                    adapter = new SimpleCursorAdapter(MainActivity.this, R.layout.list_item, c, new String[]{"Name", "address"}, new int[]{R.id.Name, R.id.address});
+                    list.setAdapter(adapter);
+
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "db Error", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+        alert.show();
+
+        return true;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        SQLiteDatabase db = dbManager.getWritableDatabase();
+        c = db.rawQuery("select * from BULB_LIST", null);
+        adapter = new SimpleCursorAdapter(MainActivity.this, R.layout.list_item, c, new String[]{"Name", "address"}, new int[]{R.id.Name, R.id.address});
+        list.setAdapter(adapter);
+    }
+
+
+    public void onBackPressed() {
+        backPressHandler.onBackPressed();
+    }
 }
 

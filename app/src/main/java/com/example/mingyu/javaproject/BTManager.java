@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,14 +48,10 @@ public class BTManager extends AppCompatActivity {
     int readBufferPosition;
 
 
-    EditText mEditReceive, mEditSend;
-    Button mButtonSend;
+    EditText mEditReceive;
     Button mButtonReg;
     Button mButtonReservation;
-    ImageButton mImageButton;
-    TextView mResult;
-
-
+    ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,22 +60,11 @@ public class BTManager extends AppCompatActivity {
 
         final DBManager dbManager = new DBManager(getApplicationContext(), "Bulb.db", null, 1);
 
-        mEditReceive = (EditText)findViewById(R.id.receiveString);
-        mEditSend = (EditText)findViewById(R.id.sendString);
-        mResult = (TextView)findViewById(R.id.tv_result);
-        mButtonSend = (Button)findViewById(R.id.sendButton);
 
 
-        mButtonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendData(mEditSend.getText().toString());
-                mEditSend.setText("");
-            }
-        });
 
-        mImageButton = (ImageButton)findViewById(R.id.imageButton);
-        mImageButton.setOnClickListener(new View.OnClickListener() {
+        mImageView = (ImageView)findViewById(R.id.imageView);
+        mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendData("a");
@@ -88,8 +74,8 @@ public class BTManager extends AppCompatActivity {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Title");
-        alert.setMessage("Message");
+        alert.setTitle("전등을 등록합니다.");
+        alert.setMessage("이름");
 
         final EditText input = new EditText(this);
         alert.setView(input);
@@ -101,7 +87,6 @@ public class BTManager extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), name + " " + address +" DB에 추가", Toast.LENGTH_LONG).show();
                 try {
                     dbManager.insert("insert into BULB_LIST values(null, '" + name + "', '" + address + "');");
-                    mResult.setText( dbManager.PrintData());
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "db Error", Toast.LENGTH_LONG).show();
                 }
@@ -128,11 +113,11 @@ public class BTManager extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(BTManager.this, ALActivity.class);
                 i.putExtra("macadd",mRemoteDevice.getAddress());
+                i.putExtra("macadd",mRemoteDevice.getAddress());
                 startActivity(i);
 
             }
         });
-        mResult.setText(dbManager.PrintData());
 
         Intent i = getIntent();
         int con = i.getIntExtra("Connect",3);
@@ -151,7 +136,6 @@ public class BTManager extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             finish();
         }
-
     }
 
     BluetoothDevice getDeviceFromBondedListAdd(String macadd) {
@@ -225,8 +209,7 @@ public class BTManager extends AppCompatActivity {
             mOutputStream = mSocket.getOutputStream();
             mInputStream = mSocket.getInputStream();
 
-
-            beginListenForData();
+            sendData("Set");
 
         }catch(Exception e) {
             Toast.makeText(getApplicationContext(), "블루투스 연결 중 오류가 발생했습니다.", Toast.LENGTH_LONG).show();
@@ -245,17 +228,20 @@ public class BTManager extends AppCompatActivity {
         {
             @Override
             public void run() {
-
                 while(!Thread.currentThread().isInterrupted()) {
                     try {
-                        int byteAvailable = mInputStream.available();   // 수신 데이터 확인
-                        if(byteAvailable > 0) {                        // 데이터가 수신된 경우.
+                        // InputStream.available() : 다른 스레드에서 blocking 하기 전까지 읽은 수 있는 문자열 개수를 반환함.
+                        int byteAvailable = mInputStream.available();
+                        if(byteAvailable > 0) {
                             byte[] packetBytes = new byte[byteAvailable];
+                            // read(buf[]) : 입력스트림에서 buf[] 크기만큼 읽어서 저장 없을 경우에 -1 리턴.
                             mInputStream.read(packetBytes);
                             for(int i=0; i<byteAvailable; i++) {
                                 byte b = packetBytes[i];
                                 if(b == mCharDelimiter) {
                                     byte[] encodedBytes = new byte[readBufferPosition];
+                                    //  System.arraycopy(복사할 배열, 복사시작점, 복사된 배열, 붙이기 시작점, 복사할 개수)
+                                    //  readBuffer 배열을 처음 부터 끝까지 encodedBytes 배열로 복사.
                                     System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
 
                                     final String data = new String(encodedBytes, "US-ASCII");
@@ -265,6 +251,7 @@ public class BTManager extends AppCompatActivity {
                                         // 수신된 문자열 데이터에 대한 처리.
                                         @Override
                                         public void run() {
+                                            // mStrDelimiter = '\n';
                                             mEditReceive.setText(mEditReceive.getText().toString() + data+ mStrDelimiter);
                                         }
 
@@ -352,8 +339,6 @@ public class BTManager extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         try{
-            mWorkerThread.interrupt(); // 데이터 수신 쓰레드 종료
-            mInputStream.close();
             mSocket.close();
         }catch(Exception e){}
         super.onDestroy();
@@ -368,12 +353,21 @@ public class BTManager extends AppCompatActivity {
                     selectDevice();
                 }
                 else if(resultCode == RESULT_CANCELED) {
-                    Toast.makeText(getApplicationContext(), "블루투수를 사용할 수 없어 프로그램을 종료합니다", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "블루투스를 사용할 수 없어 프로그램을 종료합니다", Toast.LENGTH_LONG).show();
                     finish();
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            mSocket.close();
+        }catch(Exception e){}
+        super.onBackPressed();
+
     }
 
 }
